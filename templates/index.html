@@ -8,11 +8,12 @@
 <body>
     <h1>URL Shortener</h1>
     <form method="POST" action="{{ url_for('index') }}">
-        <input type="text" name="long_url" placeholder="Enter the long URL"> 
+        <input type="text" name="long_url" placeholder="Enter the long URL">
         <button type="submit">SHORTEN</button>
     </form>
     {% if shortened_url %}
     <p>Shortened URL: <a href="{{ shortened_url }}">{{ shortened_url }}</a></p>
-    {% endif %}
+    {% endif %}   
+    
 </body>
 </html>
