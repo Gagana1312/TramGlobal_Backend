@@ -32,5 +32,17 @@ def index():
         return f"Shortened URL :{request.url_root}{short_url}"
     return render_templet("index.html")
 
+@app.route("/<short_url>")
+def redirect_url(short_url):
+    long_url = shorten_url.get(short_url)
+    if long_url:
+        return redirect(long_url)
+    else:
+        return "URL not found",404
+    
+    
+if __name__=="__main__":
+    app.run(debug=True)
+    
 
 
