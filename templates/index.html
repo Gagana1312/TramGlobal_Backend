@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>URL shortener</title>
-
 </head>
 <body>
     <h1>URL Shortener</h1>
-    <form method="POST" action="{{ url_for('index') }}">
+    <form method="POST" action="/">
+        <input type="text" name="user" placeholder="Enter your username" required>
         <input type="url" name="long_url" placeholder="Enter the long URL" required>
+        <!-- Optionally include an input field for custom_short_url -->
+        <!-- <input type="text" name="custom_short_url" placeholder="Custom short URL"> -->
         <button type="submit">SHORTEN</button>
     </form>
     {% if shortened_url %}
     <p>Shortened URL: <a href="{{ shortened_url }}">{{ shortened_url }}</a></p>
     {% endif %}   
-    
 </body>
 </html>
