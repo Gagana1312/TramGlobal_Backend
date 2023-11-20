@@ -8,13 +8,25 @@
     <h1>URL Shortener</h1>
     <form method="POST" action="/">
         <input type="text" name="user" placeholder="Enter your username" required>
-        <input type="url" name="long_url" placeholder="Enter the long URL" required>
-        <!-- Optionally include an input field for custom_short_url -->
-        <!-- <input type="text" name="custom_short_url" placeholder="Custom short URL"> -->
+         {% if user in users %}
+            {% set tier = users[user]["tier"] %}
+            <p>You are in Tier {{ tier }}. Requests left: {{ users[user]["requests_left"] }}</p>
+        {% else %}
+            <select name="tier" required>
+                <option value="1">Tier 1 - 1000 requests</option>
+                <option value="2">Tier 2 - 500 requests</option>
+                <option value="3">Tier 3 - 100 requests</option>
+            </select>
+        {% endif %}
+        <input type="url" name="long_url" placeholder="Enter the long URL" pattern="^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$" title="Enter a valid URL">
+        <input type="text" name="custom_short_url" placeholder="Custom short URL"pattern="^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$" title="Enter a valid URL">
+        <!-- ^ Include an input field for custom_short_url -->
         <button type="submit">SHORTEN</button>
+
     </form>
     {% if shortened_url %}
     <p>Shortened URL: <a href="{{ shortened_url }}">{{ shortened_url }}</a></p>
     {% endif %}   
+    <a href="/history/{{ username }}">View History</a>
 </body>
 </html>
