@@ -10,11 +10,7 @@ from flask import Flask, render_template, redirect, request
 
 app = Flask(__name__)
 shortened_url = {} 
-users = {
-    "ABC": {"password": "abc123", "tier": 1, "requests_left": 1000},
-    "XYZ": {"password": "xyz456", "tier": 2, "requests_left": 100},
-    # Add more users as needed
-}
+users = {}
 
 
 
@@ -27,10 +23,35 @@ def generate_short_URL(length = 6):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    global users
     if request.method == "POST":
         user = request.form.get('user')
-        if user in users:
-            if users[user]["requests_left"] > 0:
+        if user:
+            if user not in users:
+                users[user] = {"tier": None, "requests_left": None, "history": []}
+                
+            tier = int(request.form.get('tier'))
+            requests_allowed = None
+            if tier == 1:
+                requests_allowed = 1000
+            elif tier == 2:
+                requests_allowed = 500
+            elif tier == 3:
+                requests_allowed = 100
+            elif tier == 4:
+                requests_allowed = 50
+            else:
+                requests_allowed = 10
+            
+            if users[user]["tier"] is not None:
+                tier = users[user]["tier"]  # Get the user's current tier
+                requests_allowed = users[user]["requests_left"]    # Get remaining requests from the user's tier
+            
+
+            users[user]["tier"] = tier
+            users[user]["requests_left"] = requests_allowed
+
+            if requests_allowed > 0:
                 long_url = request.form['long_url']
                 custom_short_url = request.form.get('custom_short_url')
 
@@ -44,10 +65,11 @@ def index():
                         short_url = generate_short_URL()
 
                 shortened_url[short_url] = {"long_url": long_url, "user": user}
-                users[user]["requests_left"] -= 1
+                requests_allowed -= 1
 
-                # Update user's history of shortened URLs
-                users[user].setdefault("history", []).append(short_url)
+                users[user]["requests_left"] = requests_allowed  # Update remaining requests for the user
+
+                users[user].setdefault("history", []).append(short_url)  # Update user's history of shortened URLs
 
                 with open("urls.json", "w") as f:
                     json.dump([shortened_url, users], f)

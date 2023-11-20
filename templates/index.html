@@ -8,9 +8,21 @@
     <h1>URL Shortener</h1>
     <form method="POST" action="/">
         <input type="text" name="user" placeholder="Enter your username" required>
+         {% if user in users %}
+            {% set tier = users[user]["tier"] %}
+            <p>You are in Tier {{ tier }}. Requests left: {{ users[user]["requests_left"] }}</p>
+        {% else %}
+            <select name="tier" required>
+                <option value="1">Tier 1 - 1000 requests</option>
+                <option value="2">Tier 2 - 500 requests</option>
+                <option value="3">Tier 3 - 100 requests</option>
+                <option value="2">Tier 4 - 50 requests</option>
+                <option value="3">Tier 5 - 10 requests</option>
+            </select>
+        {% endif %}
         <input type="url" name="long_url" placeholder="Enter the long URL" required>
-        <!-- Optionally include an input field for custom_short_url -->
-        <!-- <input type="text" name="custom_short_url" placeholder="Custom short URL"> -->
+        <input type="text" name="custom_short_url" placeholder="Custom short URL">
+        <!-- ^ Include an input field for custom_short_url -->
         <button type="submit">SHORTEN</button>
     </form>
     {% if shortened_url %}
