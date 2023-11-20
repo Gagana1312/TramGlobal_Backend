@@ -16,12 +16,10 @@
                 <option value="1">Tier 1 - 1000 requests</option>
                 <option value="2">Tier 2 - 500 requests</option>
                 <option value="3">Tier 3 - 100 requests</option>
-                <option value="2">Tier 4 - 50 requests</option>
-                <option value="3">Tier 5 - 10 requests</option>
             </select>
         {% endif %}
-        <input type="url" name="long_url" placeholder="Enter the long URL" required>
-        <input type="text" name="custom_short_url" placeholder="Custom short URL">
+        <input type="url" name="long_url" placeholder="Enter the long URL" pattern="^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$" title="Enter a valid URL">
+        <input type="text" name="custom_short_url" placeholder="Custom short URL"pattern="^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$" title="Enter a valid URL">
         <!-- ^ Include an input field for custom_short_url -->
         <button type="submit">SHORTEN</button>
     </form>
