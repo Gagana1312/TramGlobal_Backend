@@ -49,24 +49,26 @@ def index():
                 long_url = request.form['long_url']
                 custom_short_url = request.form.get('custom_short_url')
 
-               # Generating short URL for the provided custom URL or the long URL
-               # Decide which URL to shorten (long_url or custom_short_url)
-                url_to_shorten = long_url if not custom_short_url else custom_short_url
-                short_url = generate_short_URL() 
-                
-                while short_url in shortened_url:
-                    short_url = generate_short_URL()
+               # Check if either long_url or custom_short_url is provided and not empty
+                if long_url or custom_short_url:
+                    url_to_shorten = long_url if not custom_short_url else custom_short_url
+                    short_url = generate_short_URL() 
+                    
+                    while short_url in shortened_url:
+                        short_url = generate_short_URL()
 
-                shortened_url[short_url] = {"long_url": url_to_shorten, "user": user}
-                requests_allowed -= 1
+                    shortened_url[short_url] = {"long_url": url_to_shorten, "user": user}
+                    requests_allowed -= 1
 
-                users[user]["requests_left"] = requests_allowed
-                users[user].setdefault("history", []).append(short_url)
+                    users[user]["requests_left"] = requests_allowed
+                    users[user].setdefault("history", []).append(short_url)
 
-                with open("urls.json", "w") as f:
-                    json.dump([shortened_url, users], f)
+                    with open("urls.json", "w") as f:
+                        json.dump([shortened_url, users], f)
 
-                return render_template("index.html", shortened_url=f"{request.url_root}{short_url}")
+                    return render_template("index.html", shortened_url=f"{request.url_root}{short_url}", username=user)
+                else:
+                    return "Please provide either a long URL or a custom short URL", 400
 
             return "Request limit reached for this tier", 403
         return "User not found or unauthorized", 401
@@ -86,9 +88,18 @@ def redirect_url(short_url):
         return "URL not found", 404
     
     
+    
+@app.route("/history/<username>")
+def user_history(username):
+    if username in users:
+        user_history = users[username].get("history", [])
+        return render_template("history.html", user=username, history=user_history)
+    else:
+        return "User not found", 404
+    
 if __name__ == "__main__":
     with open("urls.json", "r") as f:
         data = json.load(f)
-    app.run(debug=True)
+    app.run(debug=True, port = 8000)
     
     
